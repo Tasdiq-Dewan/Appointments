@@ -11,14 +11,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TimePicker
-import com.google.android.material.timepicker.TimeFormat
-import com.tasdiq.appointments.R
-import com.tasdiq.appointments.databinding.FragmentMainBinding
-import java.text.DateFormat
+import android.widget.Toast
+import com.tasdiq.appointments.databinding.FragmentAddAppointmentBinding
+import com.tasdiq.appointments.model.Appointment
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Calendar
+import java.util.*
 
 class AddAppointmentFragment : Fragment() {
 
@@ -30,7 +29,7 @@ class AddAppointmentFragment : Fragment() {
         fun newInstance() = AddAppointmentFragment()
     }
 
-    private var _binding: FragmentMainBinding? = null
+    private var _binding: FragmentAddAppointmentBinding? = null
     private val binding get() = _binding!!
 
 
@@ -38,7 +37,7 @@ class AddAppointmentFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
@@ -46,7 +45,7 @@ class AddAppointmentFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = FragmentAddAppointmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -56,7 +55,10 @@ class AddAppointmentFragment : Fragment() {
         binding.dueDate.text = currentDateTime.format(dateFormatter)
         binding.dueTime.text = currentDateTime.format(timeFormatter)
         val timeButton = binding.changeTime
+        val saveButton = binding.saveAppointment
         var cal = Calendar.getInstance()
+        saveButton.setOnClickListener{checkAndSaveInputs(cal)}
+
         val dateSetListener = object : DatePickerDialog.OnDateSetListener {
             override fun onDateSet(
                 view: DatePicker, year: Int, monthOfYear: Int,
@@ -66,7 +68,7 @@ class AddAppointmentFragment : Fragment() {
                 cal.set(Calendar.MONTH, monthOfYear)
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 val sdf = SimpleDateFormat("dd/MM/yyyy")
-                binding.dueDate.text = sdf.format(cal.getTime())
+                binding.dueDate.text = sdf.format(cal.time)
             }
         }
         dateButton.setOnClickListener{
@@ -84,7 +86,7 @@ class AddAppointmentFragment : Fragment() {
                 view: TimePicker, hourOfDay: Int, minute: Int) {
                 cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
                 cal.set(Calendar.MINUTE, minute)
-                val sdf = SimpleDateFormat("hh:mm").format(cal.time)
+                val sdf = SimpleDateFormat("HH:mm", Locale.UK).format(cal.time)
                 binding.dueTime.text = sdf!!
             }
         }
@@ -98,6 +100,23 @@ class AddAppointmentFragment : Fragment() {
                 cal.get(Calendar.MINUTE),
                 true
             ).show()
+        }
+    }
+
+    private fun checkAndSaveInputs(cal : Calendar) {
+        val task = binding.inputTask.text.toString()
+        val dueDate = binding.dueDate.text.toString()
+        val dueTime = binding.dueTime.text.toString()
+        var message = ""
+        if(task != ""){
+            viewModel.addAppointment(Appointment(task, dueDate, dueTime), requireActivity())
+            message = "Appointment saved"
+        }
+        else{
+            message = "Sorry - you need to fill in the task field"
+        }
+        if(message != ""){
+            Toast.makeText(requireActivity(), message, Toast.LENGTH_LONG).show()
         }
     }
 }

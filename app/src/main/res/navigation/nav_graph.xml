@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/appointmentListFragment2">
+
+    <fragment
+        android:id="@+id/addAppointmentFragment"
+        android:name="com.tasdiq.appointments.ui.main.AddAppointmentFragment"
+        android:label="Add New Appointment"
+        tools:layout="@layout/fragment_add_appointment" />
+    <fragment
+        android:id="@+id/appointmentListFragment2"
+        android:name="com.tasdiq.appointments.ui.main.AppointmentListFragment"
+        android:label="My Appointments"
+        tools:layout="@layout/fragment_appointment_list">
+        <action
+            android:id="@+id/action_appointmentListFragment2_to_addAppointmentFragment"
+            app:destination="@id/addAppointmentFragment" />
+    </fragment>
+</navigation>

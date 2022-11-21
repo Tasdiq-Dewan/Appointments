@@ -40,7 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Set Date" />
+            android:text="Set Date"
+            app:cardBackgroundColor="@color/teal_700"/>
 
     </LinearLayout>
 
@@ -65,7 +66,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Set Time" />
+            android:text="Set Time"
+            app:cardBackgroundColor="@color/teal_700"/>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/save_appointment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Appointment"
+        app:cardBackgroundColor="@color/teal_700"/>
 
 </LinearLayout>
